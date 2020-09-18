@@ -1,10 +1,6 @@
 import React from "react";
 import "../index.css";
 import { NavLink } from "react-router-dom";
-import About from "./About";
-import Contact from "./Contact";
-import Services from "./Services";
-
 const Navbar = () => {
   return (
     <div className="container-fluid nav bg ">
