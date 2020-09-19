@@ -1,9 +1,9 @@
 import React, { Component } from "react";
+import Form from "./Form";
 import Joi from "joi-browser";
-import Input from "./contactInput";
 import "./Contact.css";
 
-class Contact extends Component {
+class Contact extends Form {
   state = {
     clientData: { email: "", firstName: "", lastName: "", phone: "" },
     errors: {}
@@ -30,48 +30,14 @@ class Contact extends Component {
     phone: Joi.number()
       .required()
       .min(10)
-      .max(10)
       .label("Phone Number")
   };
 
-  validate = () => {
-    const options = { abortEarly: false };
-    const { error } = Joi.validate(this.state.clientData, this.schema, options);
-
-    if (!error) return null;
-
-    const errors = {};
-    for (let item of error.details) errors[item.path[0]] = item.message;
-    return errors;
-  };
-
-  validateProperty = ({ name, value }) => {
-    const obj = { [name]: value };
-    const schema = { [name]: this.schema[name] };
-    const { error } = Joi.validate(obj, schema);
-    return error ? error.details[0].message : null;
-  };
-
-  handleSubmit = e => {
-    e.preventDefault();
-
-    const errors = this.validate();
-    this.setState({ errors: errors || {} });
-
-    if (errors) return;
-
+  doSubmit = () => {
     console.log("submitted");
   };
 
-  handleChange = ({ currentTarget: input }) => {
-    const clientData = { ...this.state.clientData };
-    clientData[input.name] = input.value;
-    this.setState({ clientData });
-  };
-
   render() {
-    const { clientData, errors } = this.state;
-
     return (
       <>
         <div className="my-5">
@@ -81,38 +47,10 @@ class Contact extends Component {
           <div className="row">
             <div className="col-mid-6 col-10 mx-auto ">
               <form onSubmit={this.handleSubmit}>
-                <Input
-                  name="email"
-                  label="Email Address"
-                  value={clientData.email}
-                  onChange={this.handleChange}
-                  error={errors.email}
-                />
-
-                <Input
-                  name="firstName"
-                  label="First Name"
-                  value={clientData.firstName}
-                  onChange={this.handleChange}
-                  error={errors.firstName}
-                />
-
-                <Input
-                  name="lastName"
-                  label="Last Name"
-                  value={clientData.lastName}
-                  onChange={this.handleChange}
-                  error={errors.lastName}
-                />
-
-                <Input
-                  name="phone"
-                  label="Phone Number"
-                  value={clientData.phone}
-                  onChange={this.handleChange}
-                  error={errors.phone}
-                />
-
+                {this.renderInput("email", "Email Address")}
+                {this.renderInput("firstName", "First Name")}
+                {this.renderInput("lastName", "Last Name")}
+                {this.renderInput("phone", "Phone Number")}
                 <div className="mb-3">
                   <label
                     htmlfor="exampleFormControlTextarea1"
@@ -126,11 +64,7 @@ class Contact extends Component {
                     rows="3"
                   ></textarea>
                 </div>
-                <div className="col-12">
-                  <button className="btn btn-outline-primary" type="submit">
-                    Submit form
-                  </button>
-                </div>
+                <div className="col-12">{this.renderButton("Submit")}</div>
               </form>
             </div>
           </div>
